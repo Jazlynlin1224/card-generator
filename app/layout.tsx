@@ -1,14 +1,9 @@
 import './globals.css'
-import { Inter } from 'next/font/google'
+import type { Metadata } from 'next'
 
-// 导入手写风格的英文字体
-const dancingScript = {
-  variable: '--font-dancing-script',
-  display: 'swap',
-  adjustFontFallback: false,
-  weight: ['400', '500', '600', '700'],
-  style: ['normal'],
-  preload: true,
+export const metadata: Metadata = {
+  title: '回忆即刻 - 拍立得照片生成器',
+  description: '创建你的专属拍立得照片，定格美好瞬间',
 }
 
 export default function RootLayout({
@@ -23,7 +18,6 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
-        {/* 添加中文手写字体 */}
         <link
           href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap"
           rel="stylesheet"

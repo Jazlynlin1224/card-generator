@@ -195,7 +195,45 @@ const CardCustomizer: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const dataUrl = await toPng(cardRef.current, { cacheBust: true });
+      // 临时移除旋转，以确保完整捕获
+      const originalTransform = cardRef.current.style.transform;
+      cardRef.current.style.transform = 'none';
+
+      // 获取元素的完整尺寸，包括任何溢出的部分
+      const box = cardRef.current.getBoundingClientRect();
+      const computedStyle = window.getComputedStyle(cardRef.current);
+      const margin = {
+        left: parseInt(computedStyle.marginLeft),
+        right: parseInt(computedStyle.marginRight),
+        top: parseInt(computedStyle.marginTop),
+        bottom: parseInt(computedStyle.marginBottom)
+      };
+
+      // 计算完整的尺寸
+      const fullWidth = box.width + margin.left + margin.right;
+      const fullHeight = box.height + margin.top + margin.bottom;
+
+      // 添加额外的padding以确保捕获阴影和边框效果
+      const padding = 40;
+      
+      const dataUrl = await toPng(cardRef.current, {
+        cacheBust: true,
+        width: fullWidth + padding * 2,
+        height: fullHeight + padding * 2,
+        pixelRatio: 2,
+        style: {
+          transform: 'none',
+          margin: `${padding}px`,
+          width: `${fullWidth}px`,
+          height: `${fullHeight}px`,
+          boxSizing: 'content-box'
+        },
+        quality: 0.95
+      });
+
+      // 恢复原始旋转
+      cardRef.current.style.transform = originalTransform;
+      
       const link = document.createElement('a');
       link.download = `${title || 'polaroid'}.png`;
       link.href = dataUrl;
