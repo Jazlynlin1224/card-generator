@@ -1,33 +1,35 @@
-import type { Metadata } from "next";
-import { Playfair_Display, Lato } from "next/font/google";
-import "./globals.css";
+import './globals.css'
+import { Inter } from 'next/font/google'
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-playfair",
-});
-
-const lato = Lato({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  display: "swap",
-  variable: "--font-lato",
-});
-
-export const metadata: Metadata = {
-  title: "回忆即刻 - 创建你的专属拍立得照片",
-  description: "一个优雅的在线拍立得照片生成器，让每一张照片都成为独特的艺术品。",
-};
+// 导入手写风格的英文字体
+const dancingScript = {
+  variable: '--font-dancing-script',
+  display: 'swap',
+  adjustFontFallback: false,
+  weight: ['400', '500', '600', '700'],
+  style: ['normal'],
+  preload: true,
+}
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
-    <html lang="zh-CN" className={`${playfair.variable} ${lato.variable}`}>
+    <html lang="zh">
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+        {/* 添加中文手写字体 */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body>{children}</body>
     </html>
-  );
+  )
 }

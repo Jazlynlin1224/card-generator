@@ -25,7 +25,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
     imageUrl, 
     title, 
     subtitle, 
-    backgroundColor = '#2c2c2c',
+    backgroundColor = '#ffffff',
     filter = 'none',
     titleSize = 1.8,
     subtitleSize = 1.2,
@@ -40,11 +40,32 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
       month: 'long',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
-    })
+      minute: '2-digit',
+      hour12: false
+    }).replace(/年|月/g, '.').replace('日', '')
   }, ref) => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [showFlash, setShowFlash] = useState(false);
+
+    // 为每个字符生成随机旋转角度
+    const getRandomRotation = () => {
+      return Math.random() * 2 - 1;
+    };
+
+    // 处理背景颜色和渐变
+    const getBackgroundStyle = () => {
+      const style: Record<string, any> = {
+        transform: `rotate(${rotation}deg)`,
+      };
+
+      if (backgroundColor.startsWith('gradient-')) {
+        style.className = `${styles[backgroundColor]}`;  // 使用预定义的渐变类
+      } else {
+        style.backgroundColor = backgroundColor;
+      }
+
+      return style;
+    };
 
     useEffect(() => {
       if (imageUrl) {
@@ -60,11 +81,11 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
 
     return (
       <div 
-        className={`${styles.card} ${styles[`texture-${texture}`]}`} 
+        className={`${styles.card} ${styles[`border-${borderStyle}`]} ${styles[`texture-${texture}`]} ${season ? styles[season] : ''} ${backgroundColor.startsWith('gradient-') ? styles[backgroundColor] : ''}`}
         ref={ref}
-        style={{ transform: `rotate(${rotation}deg)` }}
+        style={getBackgroundStyle() as React.CSSProperties}
       >
-        <div className={`${styles[`border-${borderStyle}`]} ${season ? styles[season] : ''}`}>
+        <div className={styles.cardInner}>
           <div className={styles.imageContainer}>
             {imageUrl && (
               <>

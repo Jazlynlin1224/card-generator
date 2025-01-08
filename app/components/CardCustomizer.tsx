@@ -32,11 +32,78 @@ const FILTERS = {
 };
 
 const COLORS = {
-  '#ffffff': '纯白',
-  '#f5f5f5': '象牙白',
-  '#fff9e6': '暖白',
-  '#f0f5ff': '冷白',
-  '#fff0f0': '粉白',
+  // 高级渐变系列
+  'gradient-champagne': '香槟金',
+  'gradient-rose-gold': '玫瑰金',
+  'gradient-platinum': '铂金光泽',
+  'gradient-silk': '丝绸光感',
+  'gradient-pearl': '珍珠光泽',
+  'gradient-velvet': '丝绒暮光',
+  'gradient-crystal': '水晶光芒',
+  'gradient-porcelain': '青瓷韵味',
+  'gradient-cashmere': '羊绒暖阳',
+  'gradient-marble': '大理石纹',
+  
+  // 艺术渐变系列
+  'gradient-monet': '莫奈花园',
+  'gradient-vangogh': '星夜漩涡',
+  'gradient-picasso': '毕加索蓝',
+  'gradient-matisse': '马蒂斯红',
+  'gradient-klimt': '克里姆特金',
+  
+  // 自然高级渐变
+  'gradient-aurora': '极光之夜',
+  'gradient-sakura': '樱花飞舞',
+  'gradient-twilight': '暮色时分',
+  'gradient-misty-forest': '雾林晨曦',
+  'gradient-desert-dusk': '沙漠黄昏',
+  'gradient-autumn-whisper': '秋日私语',
+  'gradient-morning-dew': '晨露微光',
+  'gradient-spring-melody': '春之韵律',
+  'gradient-moonlight': '月光倾城',
+  'gradient-golden-hour': '黄金时刻',
+  
+  // 时尚渐变系列
+  'gradient-chanel': '香奈儿米',
+  'gradient-dior': '迪奥灰',
+  'gradient-hermes': '爱马仕橙',
+  'gradient-tiffany': '蒂芙尼蓝',
+  'gradient-cartier': '卡地亚红',
+  
+  // 高级纯色系列
+  '#f8f5f0': '羊皮纸白',
+  '#f4f0e6': '象牙奶茶',
+  '#e8e0d5': '麂皮绒棕',
+  '#e6e2d3': '亚麻灰',
+  '#e2d9c9': '卡其米',
+};
+
+const GRADIENTS = {
+  'gradient-pink': '粉红渐变',
+  'gradient-ocean': '海洋渐变',
+  'gradient-sunset': '日落渐变',
+  'gradient-morning': '清晨渐变',
+  'gradient-dream': '梦幻渐变',
+};
+
+// 季节主题配色
+const SEASON_COLORS = {
+  spring: {
+    background: 'linear-gradient(135deg, #fff5f5 0%, #f0fff4 100%)',
+    text: '#ff9a9e'
+  },
+  summer: {
+    background: 'linear-gradient(135deg, #f0f9ff 0%, #fff9e6 100%)',
+    text: '#4facfe'
+  },
+  autumn: {
+    background: 'linear-gradient(135deg, #fff4e6 0%, #fff9e6 100%)',
+    text: '#ffa07a'
+  },
+  winter: {
+    background: 'linear-gradient(135deg, #f5f5f5 0%, #f0f9ff 100%)',
+    text: '#a1c4fd'
+  }
 };
 
 const ROTATIONS = {
@@ -167,6 +234,10 @@ const CardCustomizer: React.FC = () => {
     URL.revokeObjectURL(url);
   }, [imageUrl, title, subtitle, backgroundColor, filter, titleSize, subtitleSize, rotation, borderStyle, texture]);
 
+  const handleColorChange = (value: string) => {
+    setBackgroundColor(value);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.customizer}>
@@ -211,12 +282,19 @@ const CardCustomizer: React.FC = () => {
           <select
             id="backgroundColor"
             value={backgroundColor}
-            onChange={(e) => setBackgroundColor(e.target.value)}
+            onChange={(e) => handleColorChange(e.target.value)}
             className={styles.select}
           >
-            {Object.entries(COLORS).map(([value, label]) => (
-              <option key={value} value={value}>{label}</option>
-            ))}
+            <optgroup label="纯色">
+              {Object.entries(COLORS).map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </optgroup>
+            <optgroup label="渐变">
+              {Object.entries(GRADIENTS).map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </optgroup>
           </select>
         </div>
 
