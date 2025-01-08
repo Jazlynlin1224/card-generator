@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useRef } from 'react';
 import { toPng } from 'html-to-image';
+import html2canvas from 'html2canvas';
 import styles from './CardCustomizer.module.css';
 import Card from './Card';
 
@@ -191,48 +192,60 @@ const CardCustomizer: React.FC = () => {
   }, []);
 
   const handleSaveAsImage = useCallback(async () => {
-    if (cardRef.current === null) return;
+    if (!cardRef.current) return;
+    
     setIsLoading(true);
-
     try {
-      // 临时移除旋转，以确保完整捕获
+      // 保存原始旋转
       const originalTransform = cardRef.current.style.transform;
       cardRef.current.style.transform = 'none';
 
-      // 获取元素的完整尺寸，包括任何溢出的部分
+      // 获取元素的边界框
       const box = cardRef.current.getBoundingClientRect();
-      const computedStyle = window.getComputedStyle(cardRef.current);
       const margin = {
-        left: parseInt(computedStyle.marginLeft),
-        right: parseInt(computedStyle.marginRight),
-        top: parseInt(computedStyle.marginTop),
-        bottom: parseInt(computedStyle.marginBottom)
+        top: 20,
+        right: 20,
+        bottom: 20,
+        left: 20
       };
 
-      // 计算完整的尺寸
-      const fullWidth = box.width + margin.left + margin.right;
-      const fullHeight = box.height + margin.top + margin.bottom;
-
-      // 添加额外的padding以确保捕获阴影和边框效果
-      const padding = 40;
-      
-      const dataUrl = await toPng(cardRef.current, {
-        cacheBust: true,
-        width: fullWidth + padding * 2,
-        height: fullHeight + padding * 2,
-        pixelRatio: 2,
-        style: {
-          transform: 'none',
-          margin: `${padding}px`,
-          width: `${fullWidth}px`,
-          height: `${fullHeight}px`,
-          boxSizing: 'content-box'
-        },
-        quality: 0.95
+      const canvas = await html2canvas(cardRef.current, {
+        backgroundColor: null,
+        scale: 2,
+        allowTaint: true,
+        useCORS: true,
+        logging: false,
+        width: box.width + margin.left + margin.right,
+        height: box.height + margin.top + margin.bottom,
+        x: -margin.left,
+        y: -margin.top,
+        onclone: (clonedDoc) => {
+          const clonedElement = clonedDoc.querySelector('[data-html2canvas-clone="true"]');
+          if (clonedElement instanceof HTMLElement) {
+            clonedElement.style.transform = 'none';
+            clonedElement.style.margin = `${margin.top}px ${margin.right}px ${margin.bottom}px ${margin.left}px`;
+          }
+        }
       });
 
       // 恢复原始旋转
       cardRef.current.style.transform = originalTransform;
+
+      // 创建一个新的canvas来处理背景
+      const finalCanvas = document.createElement('canvas');
+      finalCanvas.width = canvas.width;
+      finalCanvas.height = canvas.height;
+      const ctx = finalCanvas.getContext('2d');
+      
+      if (ctx) {
+        // 填充白色背景
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+        // 绘制原始canvas内容
+        ctx.drawImage(canvas, 0, 0);
+      }
+
+      const dataUrl = finalCanvas.toDataURL('image/png', 1.0);
       
       const link = document.createElement('a');
       link.download = `${title || 'polaroid'}.png`;

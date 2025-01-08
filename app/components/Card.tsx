@@ -95,6 +95,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                   className={`${styles.image} ${isLoaded ? styles.loaded : ''}`}
                   style={{ filter }}
                   onLoad={handleImageLoad}
+                  crossOrigin="anonymous"
                 />
                 <div className={`${styles.flashOverlay} ${showFlash ? styles.flash : ''}`} />
               </>
